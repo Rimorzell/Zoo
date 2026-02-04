@@ -79,7 +79,15 @@ class ConstraintFilter:
         "default": 0.15,     # ±15% default
     }
 
-    def filter(self, requirement: Requirement, products: List[Product]) -> FilterResult:
+    def filter(
+        self,
+        requirement: Requirement,
+        products: List[Product],
+        *,
+        dimension_tolerance_override: Optional[float] = None,
+        ip_tolerance_override: Optional[int] = None,
+        allow_missing_ip: bool = False
+    ) -> FilterResult:
         """
         Filter products against hard constraints.
 
@@ -107,7 +115,11 @@ class ConstraintFilter:
                 continue
 
             # Check dimensions
-            dim_check = self._check_dimensions(requirement, product)
+            dim_check = self._check_dimensions(
+                requirement,
+                product,
+                dimension_tolerance_override=dimension_tolerance_override
+            )
             checks.append(dim_check)
             if dim_check.status == "FAIL":
                 passed = False
@@ -115,7 +127,12 @@ class ConstraintFilter:
                 continue
 
             # Check IP rating
-            ip_check = self._check_ip_rating(requirement, product)
+            ip_check = self._check_ip_rating(
+                requirement,
+                product,
+                tolerance_override=ip_tolerance_override,
+                allow_missing_ip=allow_missing_ip
+            )
             checks.append(ip_check)
             if ip_check.status == "FAIL":
                 passed = False
@@ -154,14 +171,14 @@ class ConstraintFilter:
                 eliminated.append((product, mounting_check.explanation))
                 continue
 
+            all_checks.extend(checks)
             if passed:
                 candidates.append(product)
-                all_checks.extend(checks)
 
         return FilterResult(
             candidates=candidates,
             eliminated=eliminated,
-            constraint_checks=all_checks if candidates else [],
+            constraint_checks=all_checks,
         )
 
     def _check_product_family(self, req: Requirement, product: Product) -> ConstraintCheck:
@@ -192,7 +209,13 @@ class ConstraintFilter:
             explanation=f"Product family '{product_family}' not compatible with requirement type '{req_type}'",
         )
 
-    def _check_dimensions(self, req: Requirement, product: Product) -> ConstraintCheck:
+    def _check_dimensions(
+        self,
+        req: Requirement,
+        product: Product,
+        *,
+        dimension_tolerance_override: Optional[float] = None
+    ) -> ConstraintCheck:
         """Check if product dimensions meet requirements."""
         req_dims = req.requirements.dimensions_mm
 
@@ -222,26 +245,50 @@ class ConstraintFilter:
         # For panels, check both dimensions
         if product_type == "panel":
             if req_width is not None:
-                # Need exact match for panels
-                length_match = prod_length == req_length if prod_length else False
-                width_match = prod_width == req_width if prod_width else False
-
-                if length_match and width_match:
-                    return ConstraintCheck(
-                        constraint="dimensions",
-                        status="PASS",
-                        explanation=f"Panel dimensions {prod_length}x{prod_width} match requirement {req_length}x{req_width}",
-                    )
-                else:
+                if prod_length is None or prod_width is None:
                     return ConstraintCheck(
                         constraint="dimensions",
                         status="FAIL",
-                        explanation=f"Panel dimensions {prod_length}x{prod_width} don't match requirement {req_length}x{req_width}",
+                        explanation="Panel dimensions missing in product data",
                     )
+
+                if dimension_tolerance_override is not None and dimension_tolerance_override > 0:
+                    min_length = req_length * (1 - dimension_tolerance_override)
+                    max_length = req_length * (1 + dimension_tolerance_override)
+                    min_width = req_width * (1 - dimension_tolerance_override)
+                    max_width = req_width * (1 + dimension_tolerance_override)
+                    length_match = min_length <= prod_length <= max_length
+                    width_match = min_width <= prod_width <= max_width
+                    if length_match and width_match:
+                        return ConstraintCheck(
+                            constraint="dimensions",
+                            status="PASS",
+                            explanation=(
+                                f"Panel dimensions {prod_length}x{prod_width} within "
+                                f"tolerance of {req_length}x{req_width} (±{dimension_tolerance_override*100:.0f}%)"
+                            ),
+                        )
+                else:
+                    length_match = prod_length == req_length
+                    width_match = prod_width == req_width
+                    if length_match and width_match:
+                        return ConstraintCheck(
+                            constraint="dimensions",
+                            status="PASS",
+                            explanation=f"Panel dimensions {prod_length}x{prod_width} match requirement {req_length}x{req_width}",
+                        )
+
+                return ConstraintCheck(
+                    constraint="dimensions",
+                    status="FAIL",
+                    explanation=f"Panel dimensions {prod_length}x{prod_width} don't match requirement {req_length}x{req_width}",
+                )
 
         # For linear fixtures, check length with tolerance
         if product_type in ["linear", "waterproof"]:
             tolerance = self.DIMENSION_TOLERANCE.get(product_type, 0.10)
+            if dimension_tolerance_override is not None:
+                tolerance = dimension_tolerance_override
 
             if prod_length is None:
                 return ConstraintCheck(
@@ -277,27 +324,50 @@ class ConstraintFilter:
         if not dims_str:
             return None, None
 
-        # Handle "1200", "1200mm", "600x600", "600*600"
-        dims_str = dims_str.lower().replace("mm", "").strip()
+        # Handle "1200", "1200mm", "600x600", "600*600", "600 x 600 mm", "24\"x24\""
+        dims_str = dims_str.lower().strip()
 
-        if "x" in dims_str:
-            parts = dims_str.split("x")
-        elif "*" in dims_str:
-            parts = dims_str.split("*")
-        else:
-            try:
-                return int(float(dims_str)), None
-            except ValueError:
-                return None, None
+        # Normalize separators
+        cleaned = dims_str.replace("×", "x").replace("*", "x")
+        cleaned = cleaned.replace("mm", " mm").replace("in", " in").replace("\"", " in")
+        cleaned = re.sub(r"\s+", " ", cleaned)
 
-        try:
-            length = int(float(parts[0].strip()))
-            width = int(float(parts[1].strip())) if len(parts) > 1 else None
+        # Extract numeric values with optional unit
+        parts = [p.strip() for p in cleaned.split("x")]
+        if len(parts) == 1:
+            value = self._parse_dimension_value(parts[0])
+            return value, None
+
+        if len(parts) >= 2:
+            length = self._parse_dimension_value(parts[0])
+            width = self._parse_dimension_value(parts[1])
             return length, width
-        except (ValueError, IndexError):
-            return None, None
 
-    def _check_ip_rating(self, req: Requirement, product: Product) -> ConstraintCheck:
+        return None, None
+
+    def _parse_dimension_value(self, raw: str) -> Optional[int]:
+        """Parse a single dimension value, converting inches to mm when needed."""
+        if not raw:
+            return None
+
+        match = re.search(r"([\d.]+)\s*(mm|in)?", raw)
+        if not match:
+            return None
+
+        value = float(match.group(1))
+        unit = match.group(2)
+        if unit == "in":
+            value *= 25.4
+        return int(round(value))
+
+    def _check_ip_rating(
+        self,
+        req: Requirement,
+        product: Product,
+        *,
+        tolerance_override: Optional[int] = None,
+        allow_missing_ip: bool = False
+    ) -> ConstraintCheck:
         """Check if product IP rating meets minimum requirement."""
         req_ip = req.requirements.min_ip_rating
 
@@ -311,6 +381,12 @@ class ConstraintFilter:
         prod_ip = product.ip_rating
 
         if prod_ip is None:
+            if allow_missing_ip:
+                return ConstraintCheck(
+                    constraint="ip_rating",
+                    status="N/A",
+                    explanation=f"Product has no IP rating; requirement is IP{req_ip}",
+                )
             return ConstraintCheck(
                 constraint="ip_rating",
                 status="FAIL",
@@ -319,6 +395,8 @@ class ConstraintFilter:
 
         # Allow 1-point tolerance for high IP ratings
         tolerance = 1 if req_ip >= 65 else 0
+        if tolerance_override is not None:
+            tolerance = max(tolerance_override, 0)
         min_acceptable = req_ip - tolerance
 
         if prod_ip >= min_acceptable:

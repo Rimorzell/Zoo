@@ -33,6 +33,9 @@ class MatchingConfig:
     # Filtering options
     strict_dimensions: bool = True
     allow_ip_tolerance: bool = True
+    enable_relaxed_fallback: bool = True
+    relaxed_dimension_tolerance: float = 0.20
+    relaxed_ip_tolerance: int = 2
 
     # Selection options
     use_llm_selection: bool = True
@@ -204,8 +207,29 @@ class MatchingEngine:
         """Standard matching flow for base items and derived items without overrides."""
 
         # Step 2: Filter products by hard constraints
-        filter_result = self.filter.filter(requirement, self.products)
+        filter_result = self.filter.filter(
+            requirement,
+            self.products,
+            dimension_tolerance_override=(
+                None if self.config.strict_dimensions else self.config.relaxed_dimension_tolerance
+            ),
+            ip_tolerance_override=(None if self.config.allow_ip_tolerance else 0),
+        )
         result.candidates_evaluated = len(filter_result.candidates)
+
+        if not filter_result.candidates and self.config.enable_relaxed_fallback:
+            filter_result = self.filter.filter(
+                requirement,
+                self.products,
+                dimension_tolerance_override=self.config.relaxed_dimension_tolerance,
+                ip_tolerance_override=self.config.relaxed_ip_tolerance,
+                allow_missing_ip=True,
+            )
+            result.candidates_evaluated = len(filter_result.candidates)
+            if filter_result.candidates:
+                result.warnings.append(
+                    "No candidates met strict constraints; used relaxed fallback matching."
+                )
 
         if not filter_result.candidates:
             result.confidence_level = ConfidenceLevel.NO_MATCH
@@ -302,8 +326,29 @@ class MatchingEngine:
         # Start with the base SKU and re-evaluate with overrides
 
         # Filter products, but we want to prefer variants of the base product
-        filter_result = self.filter.filter(requirement, self.products)
+        filter_result = self.filter.filter(
+            requirement,
+            self.products,
+            dimension_tolerance_override=(
+                None if self.config.strict_dimensions else self.config.relaxed_dimension_tolerance
+            ),
+            ip_tolerance_override=(None if self.config.allow_ip_tolerance else 0),
+        )
         result.candidates_evaluated = len(filter_result.candidates)
+
+        if not filter_result.candidates and self.config.enable_relaxed_fallback:
+            filter_result = self.filter.filter(
+                requirement,
+                self.products,
+                dimension_tolerance_override=self.config.relaxed_dimension_tolerance,
+                ip_tolerance_override=self.config.relaxed_ip_tolerance,
+                allow_missing_ip=True,
+            )
+            result.candidates_evaluated = len(filter_result.candidates)
+            if filter_result.candidates:
+                result.warnings.append(
+                    "No candidates met strict constraints; used relaxed fallback matching."
+                )
 
         if not filter_result.candidates:
             result.confidence_level = ConfidenceLevel.NO_MATCH
@@ -495,13 +540,8 @@ class MatchingEngine:
 
         # Don't downgrade match confidence solely due to inheritance
         # Only apply if it would improve or maintain confidence
-        if inherited_confidence >= result.confidence:
-            # Confidence is already at or above the threshold
-            pass
-        elif inherited_confidence > 0.7:
-            # Maintain reasonable confidence for inherited matches
-            # Don't penalize just because of inheritance
-            pass
+        if result.overridden_constraints:
+            result.confidence = min(result.confidence, inherited_confidence)
 
         # Check if overridden constraints introduce ambiguity
         if result.overridden_constraints:

@@ -193,6 +193,77 @@ class TestConstraintFilter:
         assert len(result.candidates) == 1
         assert result.candidates[0].product_family == "panel"
 
+    def test_dimension_parsing_with_inches(self):
+        """Dimension parsing should handle inch-based inputs."""
+        products = [
+            Product(
+                sku="PNL-24X24",
+                name="Panel 24x24",
+                description="24 inch panel",
+                product_family="panel",
+                mounting_options=["recessed"],
+                wattage=30,
+                lumens=4000,
+                ip_rating=20,
+                length_mm=610,
+                width_mm=610,
+            ),
+        ]
+
+        req = Requirement(
+            line_item="P-IN",
+            quantity=10,
+            unit="nr",
+            description="Panel 24x24",
+            requirements=RequirementSpecs(
+                product_type="panel",
+                dimensions_mm='24" x 24"',
+            ),
+            confidence=0.95,
+        )
+
+        filter = ConstraintFilter()
+        result = filter.filter(req, products)
+
+        assert len(result.candidates) == 1
+        assert result.candidates[0].sku == "PNL-24X24"
+
+    def test_relaxed_panel_tolerance(self):
+        """Relaxed dimension tolerance should allow near-miss panels."""
+        products = [
+            Product(
+                sku="PNL-595",
+                name="Panel 595x595",
+                description="Near match panel",
+                product_family="panel",
+                mounting_options=["recessed"],
+                wattage=30,
+                lumens=4000,
+                ip_rating=20,
+                length_mm=595,
+                width_mm=595,
+            ),
+        ]
+
+        req = Requirement(
+            line_item="P-600",
+            quantity=10,
+            unit="nr",
+            description="Panel 600x600",
+            requirements=RequirementSpecs(
+                product_type="panel",
+                dimensions_mm="600x600",
+            ),
+            confidence=0.95,
+        )
+
+        filter = ConstraintFilter()
+        strict_result = filter.filter(req, products)
+        relaxed_result = filter.filter(req, products, dimension_tolerance_override=0.02)
+
+        assert len(strict_result.candidates) == 0
+        assert len(relaxed_result.candidates) == 1
+
 
 class TestPreferenceScorer:
     """Tests for soft preference scoring."""
@@ -862,6 +933,46 @@ class TestMatchingEngine:
                 min_ip_rating=68,  # Higher than any product
                 wattage=WattageSpec(target=1000),  # Way higher than available
                 dimensions_mm="9999",  # No such size
+            ),
+            confidence=0.95,
+        )
+
+        result = engine.match_single(req)
+
+        assert result.confidence_level == ConfidenceLevel.NO_MATCH
+        assert result.matched_sku is None
+
+    def test_disables_ip_tolerance(self):
+        """Disabling IP tolerance should enforce strict IP checks."""
+        config = MatchingConfig(
+            skip_validation=True,
+            allow_ip_tolerance=False,
+            enable_relaxed_fallback=False,
+        )
+        engine = MatchingEngine(config)
+        engine.products = [
+            Product(
+                sku="IP64-TEST",
+                name="IP64 fixture",
+                description="IP64 product",
+                product_family="waterproof_batten",
+                mounting_options=["surface"],
+                wattage=30,
+                lumens=3800,
+                ip_rating=64,
+                length_mm=1200,
+            ),
+        ]
+
+        req = Requirement(
+            line_item="IP65-REQ",
+            quantity=1,
+            unit="nr",
+            description="Needs IP65",
+            requirements=RequirementSpecs(
+                product_type="waterproof",
+                min_ip_rating=65,
+                dimensions_mm="1200",
             ),
             confidence=0.95,
         )

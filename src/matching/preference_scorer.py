@@ -7,6 +7,7 @@ they match soft preferences like target wattage, lumens, color temp, etc.
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
 import math
+from difflib import SequenceMatcher
 
 from ..models.requirement import Requirement
 from ..models.product import Product
@@ -301,9 +302,10 @@ class PreferenceScorer:
             return 0.0
 
         common = ref_parts & prod_parts
-        similarity = len(common) / max(len(ref_parts), len(prod_parts))
+        token_similarity = len(common) / max(len(ref_parts), len(prod_parts))
+        sequence_similarity = SequenceMatcher(None, ref_lower, prod_lower).ratio()
 
-        return similarity
+        return max(token_similarity, sequence_similarity * 0.85)
 
     def _score_features(
         self,
