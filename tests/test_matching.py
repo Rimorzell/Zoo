@@ -376,6 +376,422 @@ class TestVariantResolver:
         assert variant.requirements.lumens.target == 2100
 
 
+class TestInheritanceResolution:
+    """Tests for the Inheritance Resolution Rule."""
+
+    def test_detect_prefix_based_relationships(self):
+        """Should detect base-derived relationships by identifier prefix."""
+        from src.utils.inheritance_detector import InheritanceDetector
+
+        requirements = [
+            Requirement(
+                line_item="L1",
+                quantity=100,
+                unit="nr",
+                description="Base fixture",
+                requirements=RequirementSpecs(product_type="waterproof"),
+                confidence=0.95,
+            ),
+            Requirement(
+                line_item="L1/B",
+                quantity=50,
+                unit="nr",
+                description="Battery variant",
+                requirements=RequirementSpecs(product_type="waterproof"),
+                confidence=0.90,
+            ),
+            Requirement(
+                line_item="L1/E",
+                quantity=30,
+                unit="nr",
+                description="Generator variant",
+                requirements=RequirementSpecs(product_type="waterproof"),
+                confidence=0.90,
+            ),
+        ]
+
+        detector = InheritanceDetector()
+        result = detector.detect(requirements)
+
+        assert "L1" in result.base_items
+        assert "L1/B" in result.derived_items
+        assert "L1/E" in result.derived_items
+        assert result.derived_items["L1/B"] == "L1"
+        assert result.derived_items["L1/E"] == "L1"
+
+    def test_detect_reference_based_relationships(self):
+        """Should detect relationships by shared reference catalog."""
+        from src.utils.inheritance_detector import InheritanceDetector
+
+        requirements = [
+            Requirement(
+                line_item="H",
+                quantity=100,
+                unit="nr",
+                description="Base panel",
+                requirements=RequirementSpecs(
+                    product_type="panel",
+                    reference_catalog="RC461B PSD W60L60",
+                ),
+                confidence=0.95,
+            ),
+            Requirement(
+                line_item="H/E",
+                quantity=50,
+                unit="nr",
+                description="Panel with generator",
+                requirements=RequirementSpecs(
+                    product_type="panel",
+                    reference_catalog="RC461B PSD W60L60",
+                    emergency_type="central_generator",
+                ),
+                confidence=0.90,
+            ),
+        ]
+
+        detector = InheritanceDetector()
+        result = detector.detect(requirements)
+
+        # Should detect H as base and H/E as derived
+        assert "H" in result.base_items
+        assert "H/E" in result.derived_items
+
+    def test_constraint_inheritance_all_fields(self):
+        """Should inherit ALL constraints from base to derived."""
+        requirements = [
+            Requirement(
+                line_item="L1",
+                quantity=100,
+                unit="nr",
+                description="Base",
+                requirements=RequirementSpecs(
+                    product_type="waterproof",
+                    mounting="surface",
+                    environment="wet_area",
+                    min_ip_rating=66,
+                    dimensions_mm="1200",
+                    wattage=WattageSpec(target=30, min=27, max=33),
+                    lumens=LumensSpec(target=3800, min=3400, max=4200),
+                    reference_manufacturer="Philips",
+                    reference_catalog="BN126C L1200",
+                ),
+                confidence=0.99,
+            ),
+            Requirement(
+                line_item="L1/B",
+                quantity=50,
+                unit="nr",
+                description="Battery variant",
+                requirements=RequirementSpecs(
+                    # Only has emergency type override
+                    emergency_type="battery_pack",
+                    emergency_duration_hours=3,
+                ),
+                confidence=0.99,
+            ),
+        ]
+
+        resolver = VariantResolver()
+        resolved = resolver.resolve_variants(requirements)
+
+        variant = next(r for r in resolved if r.line_item == "L1/B")
+
+        # Should inherit ALL constraints
+        assert variant.requirements.product_type == "waterproof"
+        assert variant.requirements.mounting == "surface"
+        assert variant.requirements.environment == "wet_area"
+        assert variant.requirements.min_ip_rating == 66
+        assert variant.requirements.dimensions_mm == "1200"
+        assert variant.requirements.wattage.target == 30
+        assert variant.requirements.lumens.target == 3800
+        assert variant.requirements.reference_manufacturer == "Philips"
+
+    def test_override_precedence(self):
+        """Derived overrides should take precedence over base constraints."""
+        requirements = [
+            Requirement(
+                line_item="L1",
+                quantity=100,
+                unit="nr",
+                description="Base - surface mounted",
+                requirements=RequirementSpecs(
+                    product_type="waterproof",
+                    mounting="surface",
+                    wattage=WattageSpec(target=30),
+                ),
+                confidence=0.95,
+            ),
+            Requirement(
+                line_item="L1W",
+                quantity=10,
+                unit="nr",
+                description="Wall-mounted variant",
+                requirements=RequirementSpecs(
+                    product_type="waterproof",
+                    mounting="wall",  # Override
+                ),
+                confidence=0.95,
+            ),
+        ]
+
+        resolver = VariantResolver()
+        resolved = resolver.resolve_variants(requirements)
+
+        variant = next(r for r in resolved if r.line_item == "L1W")
+
+        # Mounting should be overridden to "wall"
+        assert variant.requirements.mounting == "wall"
+        # Wattage should be inherited
+        assert variant.requirements.wattage.target == 30
+
+    def test_override_tracking(self):
+        """Should track which constraints were inherited vs overridden."""
+        requirements = [
+            Requirement(
+                line_item="L1",
+                quantity=100,
+                unit="nr",
+                description="Base",
+                requirements=RequirementSpecs(
+                    product_type="waterproof",
+                    mounting="surface",
+                    wattage=WattageSpec(target=30),
+                    lumens=LumensSpec(target=3800),
+                ),
+                confidence=0.95,
+            ),
+            Requirement(
+                line_item="L1/B",
+                quantity=50,
+                unit="nr",
+                description="Battery variant",
+                requirements=RequirementSpecs(
+                    product_type="waterproof",  # Override (same value)
+                    emergency_type="battery_pack",  # New
+                ),
+                confidence=0.95,
+            ),
+        ]
+
+        resolver = VariantResolver()
+        resolver.resolve_variants(requirements)
+
+        info = resolver.get_inheritance_info("L1/B")
+
+        assert info is not None
+        assert info.is_derived
+        assert info.base_item == "L1"
+
+        # Wattage and lumens should be inherited
+        inherited = resolver.get_inherited_constraints("L1/B")
+        assert "wattage" in inherited
+        assert "lumens" in inherited
+
+        # product_type should be overridden (same value counts as override)
+        overridden = resolver.get_overridden_constraints("L1/B")
+        assert "product_type" in overridden
+
+    def test_confidence_propagation(self):
+        """Derived confidence should be min(base_confidence, derived_source_confidence)."""
+        resolver = VariantResolver()
+
+        # Test cases
+        assert resolver.calculate_derived_confidence(0.99, 0.85) == 0.85
+        assert resolver.calculate_derived_confidence(0.85, 0.99) == 0.85
+        assert resolver.calculate_derived_confidence(0.90, 0.90) == 0.90
+
+    def test_no_clarification_for_inherited_constraints(self):
+        """Should NOT request clarification for constraints that exist in base."""
+        resolver = VariantResolver()
+
+        requirements = [
+            Requirement(
+                line_item="L1",
+                quantity=100,
+                unit="nr",
+                description="Base",
+                requirements=RequirementSpecs(
+                    product_type="waterproof",
+                    wattage=WattageSpec(target=30),
+                    dimensions_mm="1200",
+                ),
+                confidence=0.95,
+            ),
+            Requirement(
+                line_item="L1/B",
+                quantity=50,
+                unit="nr",
+                description="Battery variant",
+                requirements=RequirementSpecs(
+                    emergency_type="battery_pack",
+                    # Missing wattage and dimensions
+                ),
+                confidence=0.85,
+            ),
+        ]
+
+        resolver.resolve_variants(requirements)
+
+        # Should NOT need clarification for wattage (base has it)
+        assert not resolver.needs_clarification("L1/B", "wattage", base_has_constraint=True)
+
+        # Should NOT need clarification for dimensions (base has it)
+        assert not resolver.needs_clarification("L1/B", "dimensions_mm", base_has_constraint=True)
+
+    def test_clarification_needed_when_missing_in_both(self):
+        """Should request clarification when constraint missing in both base and derived."""
+        resolver = VariantResolver()
+
+        requirements = [
+            Requirement(
+                line_item="D4",
+                quantity=100,
+                unit="nr",
+                description="Base",
+                requirements=RequirementSpecs(
+                    product_type="downlight",
+                    # Missing wattage
+                ),
+                confidence=0.50,
+            ),
+            Requirement(
+                line_item="D4/B",
+                quantity=50,
+                unit="nr",
+                description="Battery variant",
+                requirements=RequirementSpecs(
+                    emergency_type="battery_pack",
+                    # Also missing wattage
+                ),
+                confidence=0.50,
+            ),
+        ]
+
+        resolver.resolve_variants(requirements)
+
+        # SHOULD need clarification for wattage (neither has it)
+        assert resolver.needs_clarification("D4/B", "wattage", base_has_constraint=False)
+
+    def test_derived_from_base_marking(self):
+        """Derived matches should be marked with confidence_reason = DERIVED_FROM_BASE."""
+        config = MatchingConfig(skip_validation=True)
+        engine = MatchingEngine(config)
+
+        # Create minimal test catalog
+        engine.products = [
+            Product(
+                sku="TEST-WPB-1200-30",
+                name="Test Waterproof Batten",
+                description="Test product",
+                product_family="waterproof_batten",
+                mounting_options=["surface", "wall"],
+                wattage=30,
+                lumens=3800,
+                ip_rating=66,
+                length_mm=1200,
+                color_temp_k=3000,
+            ),
+            Product(
+                sku="TEST-WPB-1200-30-EM",
+                name="Test Waterproof Batten with Emergency",
+                description="Test product with battery",
+                product_family="waterproof_batten",
+                mounting_options=["surface", "wall"],
+                wattage=30,
+                lumens=3800,
+                ip_rating=66,
+                length_mm=1200,
+                color_temp_k=3000,
+                emergency_options=["battery_pack"],
+                emergency_duration=3,
+            ),
+        ]
+
+        requirements = [
+            Requirement(
+                line_item="L1",
+                quantity=100,
+                unit="nr",
+                description="Base",
+                requirements=RequirementSpecs(
+                    product_type="waterproof",
+                    mounting="surface",
+                    min_ip_rating=66,
+                    wattage=WattageSpec(target=30),
+                    lumens=LumensSpec(target=3800),
+                    dimensions_mm="1200",
+                ),
+                confidence=0.99,
+            ),
+            Requirement(
+                line_item="L1/B",
+                quantity=50,
+                unit="nr",
+                description="Battery variant",
+                requirements=RequirementSpecs(
+                    emergency_type="battery_pack",
+                    emergency_duration_hours=3,
+                ),
+                confidence=0.99,
+            ),
+        ]
+
+        summary = engine.match_all(requirements)
+
+        # Find the derived match
+        derived_result = next(r for r in summary.matches if r.line_item == "L1/B")
+
+        assert derived_result.is_derived_match
+        assert derived_result.base_item == "L1"
+        assert derived_result.confidence_reason == "DERIVED_FROM_BASE"
+
+    def test_inheritance_chain(self):
+        """Should correctly track multi-level inheritance chains."""
+        from src.utils.inheritance_detector import InheritanceDetector
+
+        requirements = [
+            Requirement(
+                line_item="L1",
+                quantity=100,
+                unit="nr",
+                description="Base",
+                requirements=RequirementSpecs(product_type="waterproof"),
+                confidence=0.95,
+            ),
+            Requirement(
+                line_item="L1W",
+                quantity=10,
+                unit="nr",
+                description="Wall variant",
+                requirements=RequirementSpecs(
+                    product_type="waterproof",
+                    mounting="wall",
+                ),
+                confidence=0.95,
+            ),
+            Requirement(
+                line_item="L1W/B",
+                quantity=5,
+                unit="nr",
+                description="Wall variant with battery",
+                requirements=RequirementSpecs(
+                    emergency_type="battery_pack",
+                ),
+                confidence=0.95,
+            ),
+        ]
+
+        detector = InheritanceDetector()
+        result = detector.detect(requirements)
+
+        # L1W/B should trace back through L1W to L1
+        chain = detector.get_inheritance_chain("L1W/B", result)
+
+        # Chain should be: L1W -> L1W/B (L1W is the direct parent)
+        assert "L1W" in chain
+        assert "L1W/B" in chain
+
+
 class TestMatchingEngine:
     """Integration tests for the full matching engine."""
 
