@@ -299,16 +299,23 @@ RESPOND WITH JSON:
 
                 # Find the selected product
                 selected_sku = data.get("selected_sku", "")
+                valid_skus = {sc.product.sku for sc in scored_candidates}
+                if selected_sku not in valid_skus:
+                    raise ValueError("Selected SKU not in candidates")
                 selected_product = None
                 for sc in scored_candidates:
                     if sc.product.sku == selected_sku:
                         selected_product = sc.product
                         break
 
+                confidence = float(data.get("confidence", 0.7))
+                if not 0.0 <= confidence <= 1.0:
+                    confidence = min(max(confidence, 0.0), 1.0)
+
                 return SelectionResult(
                     selected_sku=selected_sku,
                     selected_name=selected_product.name if selected_product else "",
-                    confidence=float(data.get("confidence", 0.7)),
+                    confidence=confidence,
                     reasoning=data.get("reasoning", ""),
                     key_match_points=data.get("key_match_points", []),
                     trade_offs=data.get("trade_offs", []),
