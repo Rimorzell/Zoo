@@ -59,6 +59,7 @@ class MatchResult:
 
     confidence: float = 0.0
     confidence_level: ConfidenceLevel = ConfidenceLevel.NO_MATCH
+    confidence_reason: Optional[str] = None  # "DERIVED_FROM_BASE", "DIRECT_MATCH", etc.
 
     reasoning: str = ""
 
@@ -76,8 +77,15 @@ class MatchResult:
     candidates_evaluated: int = 0
     selection_method: str = ""  # "single_candidate", "llm_selection", "no_candidates"
 
+    # Inheritance tracking
+    is_derived_match: bool = False
+    base_item: Optional[str] = None
+    base_sku: Optional[str] = None
+    inherited_constraints: List[str] = field(default_factory=list)
+    overridden_constraints: List[str] = field(default_factory=list)
+
     def to_dict(self) -> Dict:
-        return {
+        result = {
             "line_item": self.line_item,
             "quantity": self.quantity,
             "unit": self.unit,
@@ -85,6 +93,7 @@ class MatchResult:
             "matched_product_name": self.matched_product_name,
             "confidence": self.confidence,
             "confidence_level": self.confidence_level.value,
+            "confidence_reason": self.confidence_reason,
             "reasoning": self.reasoning,
             "constraint_checks": {
                 check.constraint: f"{check.status} - {check.explanation}"
@@ -99,6 +108,18 @@ class MatchResult:
             "candidates_evaluated": self.candidates_evaluated,
             "selection_method": self.selection_method,
         }
+
+        # Add inheritance info if this is a derived match
+        if self.is_derived_match:
+            result["inheritance"] = {
+                "is_derived_match": True,
+                "base_item": self.base_item,
+                "base_sku": self.base_sku,
+                "inherited_constraints": self.inherited_constraints,
+                "overridden_constraints": self.overridden_constraints,
+            }
+
+        return result
 
 
 @dataclass
