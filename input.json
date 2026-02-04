@@ -1,0 +1,369 @@
+{
+  "request_id": "REQ-2026-001",
+  "project_name": "Lighting Schedule Extraction",
+  "client": null,
+  "items": [
+    {
+      "line_item": "L1",
+      "quantity": 482,
+      "unit": "nr",
+      "description": "LED Lighting Fixture 1200mm Surface Mounted",
+      "requirements": {
+        "product_type": "waterproof",
+        "mounting": "surface",
+        "environment": "wet_area",
+        "min_ip_rating": 66,
+        "wattage": { "target": 30, "min": 27, "max": 33 },
+        "lumens": { "target": 3800, "min": 3400, "max": 4200 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "dimensions_mm": "1200",
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "BN126C L1200 LED38S/- NO"
+      },
+      "source_docs": ["input_file_0.png"],
+      "confidence": 0.99
+    },
+    {
+      "line_item": "L1/B",
+      "quantity": 320,
+      "unit": "nr",
+      "description": "L1 Fixture with Self Contained Battery (3 Hours)",
+      "requirements": {
+        "product_type": "waterproof",
+        "mounting": "surface",
+        "environment": "wet_area",
+        "min_ip_rating": 66,
+        "wattage": { "target": 30, "min": 27, "max": 33 },
+        "lumens": { "target": 3800, "min": 3400, "max": 4200 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "emergency_type": "battery_pack",
+        "emergency_duration_hours": 3,
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "BN126C L1200 LED38S/- NO"
+      },
+      "source_docs": ["input_file_0.png"],
+      "confidence": 0.99
+    },
+    {
+      "line_item": "L1/E",
+      "quantity": 231,
+      "unit": "nr",
+      "description": "L1 Fixture fed from Emergency Generators",
+      "requirements": {
+        "product_type": "waterproof",
+        "mounting": "surface",
+        "environment": "wet_area",
+        "min_ip_rating": 66,
+        "wattage": { "target": 30, "min": 27, "max": 33 },
+        "lumens": { "target": 3800, "min": 3400, "max": 4200 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "emergency_type": "central_generator",
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "BN126C L1200 LED38S/- NO"
+      },
+      "source_docs": ["input_file_0.png"],
+      "confidence": 0.99
+    },
+    {
+      "line_item": "L1W",
+      "quantity": 5,
+      "unit": "nr",
+      "description": "LED Lighting Fixture 1200mm Wall Mounted",
+      "requirements": {
+        "product_type": "waterproof",
+        "mounting": "wall",
+        "environment": "wet_area",
+        "min_ip_rating": 66,
+        "wattage": { "target": 30, "min": 27, "max": 33 },
+        "lumens": { "target": 3800, "min": 3400, "max": 4200 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "dimensions_mm": "1200",
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "BN126C L1200 LED38S/- NO"
+      },
+      "source_docs": ["input_file_0.png"],
+      "confidence": 0.99
+    },
+    {
+      "line_item": "L1W/B",
+      "quantity": 15,
+      "unit": "nr",
+      "description": "L1W Fixture with Self Contained Battery (3 Hours)",
+      "requirements": {
+        "product_type": "waterproof",
+        "mounting": "wall",
+        "environment": "wet_area",
+        "min_ip_rating": 66,
+        "wattage": { "target": 30, "min": 27, "max": 33 },
+        "lumens": { "target": 3800, "min": 3400, "max": 4200 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "emergency_type": "battery_pack",
+        "emergency_duration_hours": 3,
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "BN126C L1200 LED38S/- NO"
+      },
+      "source_docs": ["input_file_0.png"],
+      "confidence": 0.99
+    },
+    {
+      "line_item": "L1W/E",
+      "quantity": 11,
+      "unit": "nr",
+      "description": "L1W Fixture fed from Emergency Generators",
+      "requirements": {
+        "product_type": "waterproof",
+        "mounting": "wall",
+        "environment": "wet_area",
+        "min_ip_rating": 66,
+        "wattage": { "target": 30, "min": 27, "max": 33 },
+        "lumens": { "target": 3800, "min": 3400, "max": 4200 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "emergency_type": "central_generator",
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "BN126C L1200 LED38S/- NO"
+      },
+      "source_docs": ["input_file_0.png"],
+      "confidence": 0.99
+    },
+    {
+      "line_item": "H/E",
+      "quantity": 6,
+      "unit": "nr",
+      "description": "Recessed Panel 600x600mm fed from Emergency Generators",
+      "requirements": {
+        "product_type": "panel",
+        "mounting": "recessed",
+        "environment": "indoor",
+        "min_ip_rating": 20,
+        "wattage": { "target": 30, "min": 27, "max": 33 },
+        "lumens": { "target": 4000, "min": 3600, "max": 4400 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "dimensions_mm": "600x600",
+        "emergency_type": "central_generator",
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "RC461B PSD W60L60"
+      },
+      "source_docs": ["input_file_0.png"],
+      "notes": ["Description says 60*60mm but catalog W60L60 implies 600x600mm. Assumed 600x600."],
+      "confidence": 0.95
+    },
+    {
+      "line_item": "H/B",
+      "quantity": 2,
+      "unit": "nr",
+      "description": "Recessed Panel 600x600mm with Self Contained Battery",
+      "requirements": {
+        "product_type": "panel",
+        "mounting": "recessed",
+        "environment": "indoor",
+        "min_ip_rating": 20,
+        "wattage": { "target": 30, "min": 27, "max": 33 },
+        "lumens": { "target": 4000, "min": 3600, "max": 4400 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "dimensions_mm": "600x600",
+        "emergency_type": "battery_pack",
+        "emergency_duration_hours": 3,
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "RC461B PSD W60L60"
+      },
+      "source_docs": ["input_file_0.png"],
+      "confidence": 0.95
+    },
+    {
+      "line_item": "L2W",
+      "quantity": 35,
+      "unit": "nr",
+      "description": "Wall Mounted LED Fixture IP54",
+      "requirements": {
+        "product_type": "wall",
+        "mounting": "wall",
+        "environment": "wet_area",
+        "min_ip_rating": 54,
+        "wattage": { "target": 20.5, "min": 18, "max": 23 },
+        "lumens": { "target": 2200, "min": 2000, "max": 2400 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "DN140B PSED-E IP54"
+      },
+      "source_docs": ["input_file_0.png"],
+      "notes": ["Catalog DN140B is typically a recessed downlight. Wall mounting may require accessory."],
+      "confidence": 0.90
+    },
+    {
+      "line_item": "L2W/E",
+      "quantity": 169,
+      "unit": "nr",
+      "description": "L2W Fixture fed from Emergency Generators",
+      "requirements": {
+        "product_type": "wall",
+        "mounting": "wall",
+        "environment": "wet_area",
+        "min_ip_rating": 54,
+        "wattage": { "target": 20.5, "min": 18, "max": 23 },
+        "lumens": { "target": 2200, "min": 2000, "max": 2400 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "emergency_type": "central_generator",
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "DN140B PSED-E IP54"
+      },
+      "source_docs": ["input_file_0.png"],
+      "confidence": 0.90
+    },
+    {
+      "line_item": "D3/B",
+      "quantity": 215,
+      "unit": "nr",
+      "description": "Surface Mounted LED Fixture IP54 with Battery",
+      "requirements": {
+        "product_type": "downlight",
+        "mounting": "surface",
+        "environment": "wet_area",
+        "min_ip_rating": 54,
+        "wattage": { "target": 20.5, "min": 18, "max": 23 },
+        "lumens": { "target": 2200, "min": 2000, "max": 2400 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "emergency_type": "battery_pack",
+        "emergency_duration_hours": 3,
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "DN140B PSED-E IP54"
+      },
+      "source_docs": ["input_file_0.png"],
+      "notes": ["Catalog DN140B is recessed; Surface mounting implies use of a surface kit."],
+      "confidence": 0.95
+    },
+    {
+      "line_item": "D1",
+      "quantity": 186,
+      "unit": "nr",
+      "description": "Surface Mounted LED Fixture IP20",
+      "requirements": {
+        "product_type": "downlight",
+        "mounting": "surface",
+        "environment": "indoor",
+        "min_ip_rating": 20,
+        "wattage": { "target": 22.5, "min": 20, "max": 25 },
+        "lumens": { "target": 2100, "min": 1900, "max": 2300 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "DN145B PSD D218 LED20S/830"
+      },
+      "source_docs": ["input_file_0.png"],
+      "confidence": 0.99
+    },
+    {
+      "line_item": "D1/B",
+      "quantity": 141,
+      "unit": "nr",
+      "description": "D1 Fixture with Self Contained Battery",
+      "requirements": {
+        "product_type": "downlight",
+        "mounting": "surface",
+        "environment": "indoor",
+        "min_ip_rating": 20,
+        "wattage": { "target": 22.5, "min": 20, "max": 25 },
+        "lumens": { "target": 2100, "min": 1900, "max": 2300 },
+        "color_temp_k": { "target": 3000, "acceptable": [3000] },
+        "emergency_type": "battery_pack",
+        "emergency_duration_hours": 3,
+        "reference_manufacturer": "Philips",
+        "reference_catalog": "DN145B PSD D218 LED20S/830"
+      },
+      "source_docs": ["input_file_0.png"],
+      "confidence": 0.99
+    },
+    {
+      "line_item": "D4/B",
+      "quantity": 157,
+      "unit": "nr",
+      "description": "Type D4/B (Specs Inferred)",
+      "requirements": {
+        "product_type": "downlight",
+        "mounting": "recessed",
+        "environment": "indoor",
+        "min_ip_rating": 20,
+        "wattage": null,
+        "lumens": null,
+        "color_temp_k": null,
+        "emergency_type": "battery_pack"
+      },
+      "source_docs": ["input_file_0.png"],
+      "notes": ["No specification text found for D4. Product type inferred from 'D' prefix. Please clarify specs."],
+      "confidence": 0.5
+    },
+    {
+      "line_item": "D4/E",
+      "quantity": 158,
+      "unit": "nr",
+      "description": "Type D4/E (Specs Inferred)",
+      "requirements": {
+        "product_type": "downlight",
+        "mounting": "recessed",
+        "environment": "indoor",
+        "min_ip_rating": 20,
+        "wattage": null,
+        "lumens": null,
+        "color_temp_k": null,
+        "emergency_type": "central_generator"
+      },
+      "source_docs": ["input_file_0.png"],
+      "notes": ["No specification text found for D4. Product type inferred from 'D' prefix. Please clarify specs."],
+      "confidence": 0.5
+    },
+    {
+      "line_item": "S1",
+      "quantity": 1435,
+      "unit": "mt",
+      "description": "Lighting LED Strip type S1",
+      "requirements": {
+        "product_type": "linear",
+        "mounting": "surface",
+        "environment": "indoor",
+        "min_ip_rating": 20
+      },
+      "source_docs": ["input_file_0.png"],
+      "notes": ["Specific wattage or color temp not provided in extract."],
+      "confidence": 0.8
+    },
+    {
+      "line_item": "EXIT SIGN",
+      "quantity": 201,
+      "unit": "nr",
+      "description": "LED Exit Sign - Door & Directional",
+      "requirements": {
+        "product_type": "exit",
+        "mounting": "ceiling",
+        "environment": "wet_area",
+        "min_ip_rating": 44,
+        "wattage": { "target": 3, "min": 2, "max": 4 },
+        "emergency_type": "battery_pack",
+        "emergency_duration_hours": 3,
+        "reference_manufacturer": "Signify",
+        "reference_catalog": "ER44 RLDU2R"
+      },
+      "source_docs": ["input_file_0.png"],
+      "confidence": 0.99
+    },
+    {
+      "line_item": "OBSTRUCTION",
+      "quantity": 12,
+      "unit": "nr",
+      "description": "Provision for LED Obstruction",
+      "requirements": {
+        "product_type": "flood",
+        "environment": "outdoor",
+        "min_ip_rating": 65
+      },
+      "source_docs": ["input_file_0.png"],
+      "notes": ["Provision only; likely Aircraft Warning Light."],
+      "confidence": 0.7
+    }
+  ],
+  "global_notes": [
+    "Philips BN126C (L1/L1W) is a waterproof batten.",
+    "Philips DN140B (L2W/D3) is a recessed downlight. 'Wall Mounted' designation for L2W is unusual for this code and may require specific accessories.",
+    "Type D4 has quantities but no specifications in the source text.",
+    "Items suffixed with /E are fed from emergency generators.",
+    "Items suffixed with /B have self-contained 3-hour batteries."
+  ],
+  "source_documents": ["input_file_0.png"]
+}

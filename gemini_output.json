@@ -1,0 +1,365 @@
+{
+  "source_file": "input_file_0.png",
+  "document_type": "drawing",
+  "confidence": 0.98,
+  "raw_text": "LUMINARIES LIST DESCRIPTION\nL1 TYPE: LED LIGHTING FIXTURE 1200mm MOUNTING: SURFACE MOUNTED LAMP: 30 WATT LED LAMP LUMINOUS FLUX: 3800 lm COLOR TEMPERATURE: 3000K PROTECTION: IP 66 MANUFACTURER: PHILIPS - BN126C L1200 LED38S/- NO\nL/1E SIMILAR TO L1 BUT FED FROM EMERGENCY GENERATORS\nL/1B DITTO AS ABOVE BUT WITH SELF CONTAINED BATTERY FOR 3 HOURS\nL1W TYPE: LED LIGHTING FIXTURE 1200mm MOUNTING: WALL MOUNTED LAMP: 30 WATT LED LAMP LUMINOUS FLUX: 3800 lm COLOR TEMPERATURE: 3000K PROTECTION: IP 66 MANUFACTURER: PHILIPS - BN126C L1200 LED38S/- NO\nL1W/E SIMILAR TO L1W BUT FED FROM EMERGENCY GENERATORS\nL1W/B DITTO AS ABOVE BUT WITH SELF CONTAINED BATTERY FOR 3 HOURS\nH TYPE: LED LIGHTING FIXTURE 60*60mm MOUNTING: CEILING RECESSED MOUNTED LAMP: 30 WATT LED LAMP LUMINOUS FLUX: 4000 lm COLOR TEMPERATURE: 3000 K PROTECTION: IP 20 MANUFACTURER: PHILIPS RC461B PSD W60L60 PSD W60L60 VPC PIP LED40S/- NO\nH/E SIMILAR TO H BUT FED FROM EMERGENCY GENERATORS\nH/B DITTO AS ABOVE BUT WITH SELF CONTAINED BATTERY FOR 3 HOURS\nL2W TYPE: LED LIGHTING FIXTURE MOUNTING: WALL MOUNTED LAMP: 20.5 WATT LED LAMP LUMINOUS FLUX: 2200 lm COLOR TEMPERATURE: 3000 K PROTECTION: IP 54 MANUFACTURER: PHILIPS DN140B PSED-E IP54 D216 1 xLED20S/830\nL2W/E SIMILAR TO L2W BUT FED FROM EMERGENCY GENERATORS\nD3 TYPE: LED LIGHTING FIXTURE MOUNTING: SURFACE MOUNTED LAMP: 20.5 WATT LED LAMP LUMINOUS FLUX: 2200 lm COLOR TEMPERATURE: 3000 K PROTECTION: IP 54 MANUFACTURER: PHILIPS DN140B PSED-E IP54 D216 1 xLED20S/830\nD/3E SIMILAR TO D3 BUT FED FROM EMERGENCY GENERATORS\nD/3B DITTO AS ABOVE BUT WITH SELF CONTAINED BATTERY FOR 3 HOURS\nD1 TYPE: LED LIGHTING FIXTURE MOUNTING: SURFACE MOUNTED LAMP: 22.5 WATT LED LAMP LUMINOUS FLUX: 2100 lm COLOR TEMPERATURE: 3000 K PROTECTION: IP 20 MANUFACTURER: PHILIPS - DN145B PSD D218 LED20S/830 NO\nD1/E SIMILAR TO D1 BUT FED FROM EMERGENCY GENERATORS\nD1/B DITTO AS ABOVE BUT WITH SELF CONTAINED BATTERY FOR 3 HOURS\nEXIT SIGN TYPE: LED EXIT SIGN - DOOR & DIRECTIONAL MOUNTING: CEILING / SURFACE MOUNTED LAMP: 3 WATT LED LAMP WITH SELF CONTAINED BATTERY FOR 3 HOURS PROTECTION: IP 44 MANUFACTURER: SIGNIFY - ER44 RLDU2R OR EQUALLY APPROVED\n\nDESCRIPTION QTY Unit\ntype L1 482 nr\ntype L1/B 320 nr\ntype L1/E 231 nr\ntype D1 186 nr\ntype D1/B 141 nr\ntype D3/B 215 nr\ntype L1W 5 nr\ntype L1W/B 15 nr\ntype L1W/E 11 nr\ntype L2W 35 nr\ntype L2W/E 169 nr\ntype H/E 6 nr\ntype H/B 2 nr\ntype D4/B 157 nr\ntype D4/E 158 nr\nLighting LED Strip type S1 1435 mt\nPROVISION FOR LED OBSTRUCTION 12 nr\nEXIT SIGN 201 nr",
+  "items": [
+    {
+      "reference": "L1",
+      "raw_text": "L1 TYPE: LED LIGHTING FIXTURE 1200mm MOUNTING: SURFACE MOUNTED LAMP: 30 WATT LED LAMP LUMINOUS FLUX: 3800 lm COLOR TEMPERATURE: 3000K PROTECTION: IP 66 MANUFACTURER: PHILIPS - BN126C L1200 LED38S/- NO",
+      "quantity": 482,
+      "unit": "nr",
+      "specs_mentioned": {
+        "product_type": "LED LIGHTING FIXTURE",
+        "wattage": 30,
+        "lumens": 3800,
+        "color_temp_k": 3000,
+        "ip_rating": "IP 66",
+        "mounting": "SURFACE MOUNTED",
+        "dimensions_mm": "1200mm",
+        "manufacturer_reference": "PHILIPS",
+        "catalog_number": "BN126C L1200 LED38S/- NO"
+      },
+      "confidence": 0.99
+    },
+    {
+      "reference": "L1/B",
+      "raw_text": "L/1B DITTO AS ABOVE BUT WITH SELF CONTAINED BATTERY FOR 3 HOURS",
+      "quantity": 320,
+      "unit": "nr",
+      "specs_mentioned": {
+        "product_type": "LED LIGHTING FIXTURE",
+        "emergency": "SELF CONTAINED BATTERY FOR 3 HOURS"
+      },
+      "references_other": [
+        "L1"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "reference": "L1/E",
+      "raw_text": "L/1E SIMILAR TO L1 BUT FED FROM EMERGENCY GENERATORS",
+      "quantity": 231,
+      "unit": "nr",
+      "specs_mentioned": {
+        "product_type": "LED LIGHTING FIXTURE",
+        "emergency": "FED FROM EMERGENCY GENERATORS"
+      },
+      "references_other": [
+        "L1"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "reference": "D1",
+      "raw_text": "D1 TYPE: LED LIGHTING FIXTURE MOUNTING: SURFACE MOUNTED LAMP: 22.5 WATT LED LAMP LUMINOUS FLUX: 2100 lm COLOR TEMPERATURE: 3000 K PROTECTION: IP 20 MANUFACTURER: PHILIPS - DN145B PSD D218 LED20S/830 NO",
+      "quantity": 186,
+      "unit": "nr",
+      "specs_mentioned": {
+        "product_type": "LED LIGHTING FIXTURE",
+        "wattage": 22.5,
+        "lumens": 2100,
+        "color_temp_k": 3000,
+        "ip_rating": "IP 20",
+        "mounting": "SURFACE MOUNTED",
+        "manufacturer_reference": "PHILIPS",
+        "catalog_number": "DN145B PSD D218 LED20S/830 NO"
+      },
+      "confidence": 0.99
+    },
+    {
+      "reference": "D1/B",
+      "raw_text": "D1/B DITTO AS ABOVE BUT WITH SELF CONTAINED BATTERY FOR 3 HOURS",
+      "quantity": 141,
+      "unit": "nr",
+      "specs_mentioned": {
+        "emergency": "SELF CONTAINED BATTERY FOR 3 HOURS"
+      },
+      "references_other": [
+        "D1"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "reference": "D3/B",
+      "raw_text": "D/3B DITTO AS ABOVE BUT WITH SELF CONTAINED BATTERY FOR 3 HOURS",
+      "quantity": 215,
+      "unit": "nr",
+      "specs_mentioned": {
+        "product_type": "LED LIGHTING FIXTURE",
+        "wattage": 20.5,
+        "lumens": 2200,
+        "color_temp_k": 3000,
+        "ip_rating": "IP 54",
+        "mounting": "SURFACE MOUNTED",
+        "emergency": "SELF CONTAINED BATTERY FOR 3 HOURS",
+        "manufacturer_reference": "PHILIPS",
+        "catalog_number": "DN140B PSED-E IP54 D216 1 xLED20S/830"
+      },
+      "confidence": 0.99
+    },
+    {
+      "reference": "L1W",
+      "raw_text": "L1W TYPE: LED LIGHTING FIXTURE 1200mm MOUNTING: WALL MOUNTED LAMP: 30 WATT LED LAMP LUMINOUS FLUX: 3800 lm COLOR TEMPERATURE: 3000K PROTECTION: IP 66 MANUFACTURER: PHILIPS - BN126C L1200 LED38S/- NO",
+      "quantity": 5,
+      "unit": "nr",
+      "specs_mentioned": {
+        "product_type": "LED LIGHTING FIXTURE",
+        "wattage": 30,
+        "lumens": 3800,
+        "color_temp_k": 3000,
+        "ip_rating": "IP 66",
+        "mounting": "WALL MOUNTED",
+        "dimensions_mm": "1200mm",
+        "manufacturer_reference": "PHILIPS",
+        "catalog_number": "BN126C L1200 LED38S/- NO"
+      },
+      "confidence": 0.99
+    },
+    {
+      "reference": "L1W/B",
+      "raw_text": "DITTO AS ABOVE BUT WITH SELF CONTAINED BATTERY FOR 3 HOURS",
+      "quantity": 15,
+      "unit": "nr",
+      "specs_mentioned": {
+        "emergency": "SELF CONTAINED BATTERY FOR 3 HOURS"
+      },
+      "references_other": [
+        "L1W"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "reference": "L1W/E",
+      "raw_text": "SIMILAR TO L1W BUT FED FROM EMERGENCY GENERATORS",
+      "quantity": 11,
+      "unit": "nr",
+      "specs_mentioned": {
+        "emergency": "FED FROM EMERGENCY GENERATORS"
+      },
+      "references_other": [
+        "L1W"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "reference": "L2W",
+      "raw_text": "L2W TYPE: LED LIGHTING FIXTURE MOUNTING: WALL MOUNTED LAMP: 20.5 WATT LED LAMP LUMINOUS FLUX: 2200 lm COLOR TEMPERATURE: 3000 K PROTECTION: IP 54 MANUFACTURER: PHILIPS DN140B PSED-E IP54 D216 1 xLED20S/830",
+      "quantity": 35,
+      "unit": "nr",
+      "specs_mentioned": {
+        "product_type": "LED LIGHTING FIXTURE",
+        "wattage": 20.5,
+        "lumens": 2200,
+        "color_temp_k": 3000,
+        "ip_rating": "IP 54",
+        "mounting": "WALL MOUNTED",
+        "manufacturer_reference": "PHILIPS",
+        "catalog_number": "DN140B PSED-E IP54 D216 1 xLED20S/830"
+      },
+      "confidence": 0.99
+    },
+    {
+      "reference": "L2W/E",
+      "raw_text": "SIMILAR TO L2W BUT FED FROM EMERGENCY GENERATORS",
+      "quantity": 169,
+      "unit": "nr",
+      "specs_mentioned": {
+        "emergency": "FED FROM EMERGENCY GENERATORS"
+      },
+      "references_other": [
+        "L2W"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "reference": "H/E",
+      "raw_text": "SIMILAR TO H BUT FED FROM EMERGENCY GENERATORS",
+      "quantity": 6,
+      "unit": "nr",
+      "specs_mentioned": {
+        "product_type": "LED LIGHTING FIXTURE",
+        "wattage": 30,
+        "lumens": 4000,
+        "color_temp_k": 3000,
+        "ip_rating": "IP 20",
+        "mounting": "CEILING RECESSED MOUNTED",
+        "dimensions_mm": "60*60mm",
+        "emergency": "FED FROM EMERGENCY GENERATORS",
+        "manufacturer_reference": "PHILIPS",
+        "catalog_number": "RC461B PSD W60L60 PSD W60L60 VPC PIP LED40S/- NO"
+      },
+      "confidence": 0.99
+    },
+    {
+      "reference": "H/B",
+      "raw_text": "DITTO AS ABOVE BUT WITH SELF CONTAINED BATTERY FOR 3 HOURS",
+      "quantity": 2,
+      "unit": "nr",
+      "specs_mentioned": {
+        "emergency": "SELF CONTAINED BATTERY FOR 3 HOURS"
+      },
+      "references_other": [
+        "H"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "reference": "D4/B",
+      "raw_text": "type D4/B",
+      "quantity": 157,
+      "unit": "nr",
+      "specs_mentioned": {
+        "emergency": "likely battery backup based on /B suffix"
+      },
+      "confidence": 0.95
+    },
+    {
+      "reference": "D4/E",
+      "raw_text": "type D4/E",
+      "quantity": 158,
+      "unit": "nr",
+      "specs_mentioned": {
+        "emergency": "likely generator backup based on /E suffix"
+      },
+      "confidence": 0.95
+    },
+    {
+      "reference": "S1",
+      "raw_text": "Lighting LED Strip type S1",
+      "quantity": 1435,
+      "unit": "mt",
+      "specs_mentioned": {
+        "product_type": "LED Strip"
+      },
+      "confidence": 0.99
+    },
+    {
+      "reference": "PROVISION FOR LED OBSTRUCTION",
+      "raw_text": "PROVISION FOR LED OBSTRUCTION",
+      "quantity": 12,
+      "unit": "nr",
+      "confidence": 0.99
+    },
+    {
+      "reference": "EXIT SIGN",
+      "raw_text": "EXIT SIGN TYPE: LED EXIT SIGN - DOOR & DIRECTIONAL MOUNTING: CEILING / SURFACE MOUNTED LAMP: 3 WATT LED LAMP WITH SELF CONTAINED BATTERY FOR 3 HOURS PROTECTION: IP 44 MANUFACTURER: SIGNIFY - ER44 RLDU2R OR EQUALLY APPROVED",
+      "quantity": 201,
+      "unit": "nr",
+      "specs_mentioned": {
+        "product_type": "LED EXIT SIGN",
+        "wattage": 3,
+        "ip_rating": "IP 44",
+        "mounting": "CEILING / SURFACE MOUNTED",
+        "emergency": "SELF CONTAINED BATTERY FOR 3 HOURS",
+        "manufacturer_reference": "SIGNIFY",
+        "catalog_number": "ER44 RLDU2R"
+      },
+      "confidence": 0.99
+    }
+  ],
+  "tables": [
+    {
+      "headers": [
+        "DESCRIPTION",
+        "QTY",
+        "Unit"
+      ],
+      "rows": [
+        [
+          "type L1",
+          "482",
+          "nr"
+        ],
+        [
+          "type L1/B",
+          "320",
+          "nr"
+        ],
+        [
+          "type L1/E",
+          "231",
+          "nr"
+        ],
+        [
+          "type D1",
+          "186",
+          "nr"
+        ],
+        [
+          "type D1/B",
+          "141",
+          "nr"
+        ],
+        [
+          "type D3/B",
+          "215",
+          "nr"
+        ],
+        [
+          "type L1W",
+          "5",
+          "nr"
+        ],
+        [
+          "type L1W/B",
+          "15",
+          "nr"
+        ],
+        [
+          "type L1W/E",
+          "11",
+          "nr"
+        ],
+        [
+          "type L2W",
+          "35",
+          "nr"
+        ],
+        [
+          "type L2W/E",
+          "169",
+          "nr"
+        ],
+        [
+          "type H/E",
+          "6",
+          "nr"
+        ],
+        [
+          "type H/B",
+          "2",
+          "nr"
+        ],
+        [
+          "type D4/B",
+          "157",
+          "nr"
+        ],
+        [
+          "type D4/E",
+          "158",
+          "nr"
+        ],
+        [
+          "Lighting LED Strip type S1",
+          "1435",
+          "mt"
+        ],
+        [
+          "PROVISION FOR LED OBSTRUCTION",
+          "12",
+          "nr"
+        ],
+        [
+          "EXIT SIGN",
+          "201",
+          "nr"
+        ]
+      ],
+      "context": "Quantity Schedule"
+    }
+  ],
+  "cross_references": [],
+  "metadata": {}
+}
